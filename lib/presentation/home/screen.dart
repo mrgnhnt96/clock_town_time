@@ -15,10 +15,12 @@ class _HomeScreenState extends State<HomeScreen>
   Ticker _ticker;
   int _hour, _min;
   bool _isMorning;
+  bool _show;
 
   @override
   void initState() {
     super.initState();
+    _show = false;
     _hour ??= 0;
     _min ??= 0;
     _isMorning ??= true;
@@ -26,10 +28,9 @@ class _HomeScreenState extends State<HomeScreen>
       final _date = DateTime.now();
       _hour = _date.hour;
       _min = _date.minute;
-      if (_hour > 11) {
-        _hour -= 12;
-        _isMorning = false;
-      }
+      _isMorning = _hour <= 8 || _hour >= 20;
+      if (!_isMorning) _hour -= 12;
+      _show = true;
       setState(() {});
     })
       ..start();
@@ -46,20 +47,25 @@ class _HomeScreenState extends State<HomeScreen>
     final _screenSize = MediaQuery.of(context).size;
 
     return Scaffold(
-        body: Stack(
-      children: [
-        MinuteCircle(
-          key: Key('MinuteCircle'),
-          screenSize: _screenSize,
-          minute: _min,
-        ),
-        HourCircle(
-          key: Key('HourCircle'),
-          screenSize: _screenSize,
-          hour: _hour,
-          isMorning: _isMorning,
-        ),
-      ],
+        body: AnimatedSwitcher(
+      duration: const Duration(milliseconds: 2500),
+      child: _show
+          ? Stack(
+              children: [
+                MinuteCircle(
+                  key: Key('MinuteCircle'),
+                  screenSize: _screenSize,
+                  minute: _min,
+                ),
+                HourCircle(
+                  key: Key('HourCircle'),
+                  screenSize: _screenSize,
+                  hour: _hour,
+                  isMorning: _isMorning,
+                ),
+              ],
+            )
+          : Container(),
     ));
   }
 }

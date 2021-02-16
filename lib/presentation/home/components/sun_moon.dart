@@ -18,19 +18,24 @@ class SunMoonCircle extends StatelessWidget {
       child: SizedBox(
         height: _screenSize.width * .1,
         width: _screenSize.width * .1,
-        child: isMorning
-            ? Container(
-                decoration: BoxDecoration(
-                  color: Colors.orange,
-                  shape: BoxShape.circle,
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 1500),
+          child: isMorning
+              ? Container(
+                  key: const Key('night'),
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    shape: BoxShape.circle,
+                  ),
+                )
+              : Container(
+                  key: const Key('day'),
+                  decoration: BoxDecoration(
+                    color: Colors.orange,
+                    shape: BoxShape.circle,
+                  ),
                 ),
-              )
-            : Container(
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                  shape: BoxShape.circle,
-                ),
-              ),
+        ),
       ),
     );
   }
